@@ -9,36 +9,6 @@ import (
 	"github.com/Jumpaku/go-assert"
 )
 
-type Type int
-
-func (t Type) String() string {
-	switch t {
-	case TypeNull:
-		return `null`
-	case TypeString:
-		return `string`
-	case TypeNumber:
-		return `number`
-	case TypeBoolean:
-		return `boolean`
-	case TypeArray:
-		return `array`
-	case TypeObject:
-		return `object`
-	default:
-		panic("invalid JsonType")
-	}
-}
-
-const (
-	TypeNull Type = iota
-	TypeString
-	TypeNumber
-	TypeBoolean
-	TypeArray
-	TypeObject
-)
-
 type Value interface {
 	json.Marshaler
 	json.Unmarshaler

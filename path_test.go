@@ -74,6 +74,13 @@ func TestPath_Append(t *testing.T) {
 	equal(t, k1, jsonvalue.Key("xyz"))
 }
 
+func TestPath_Slice(t *testing.T) {
+	p := jsonvalue.Path([]jsonvalue.Key{"abc", "123", "xyz"}).Slice(1, 2)
+	equal(t, p.Len(), 1)
+	k1 := p.Get(0)
+	equal(t, k1, jsonvalue.Key("123"))
+}
+
 func TestWalk(t *testing.T) {
 	t.Run(`error`, func(t *testing.T) {
 		v := jsonvalue.Null()
