@@ -38,7 +38,7 @@ func TestKey_String(t *testing.T) {
 
 func TestKey_Integer(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		v := jsonvalue.Key("123").Integer()
+		v := jsonvalue.Key("123").Int()
 		equal(t, v, 123)
 	})
 }

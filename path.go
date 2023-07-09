@@ -12,7 +12,7 @@ type Key string
 func (e Key) String() string {
 	return string(e)
 }
-func (e Key) Integer() int {
+func (e Key) Int() int {
 	elm, err := strconv.ParseInt(e.String(), 10, 64)
 	assert.State(err == nil, "%v cannot be parsed to int: %w", e, err)
 
