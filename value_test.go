@@ -203,7 +203,7 @@ func checkSliceContains[T comparable](t *testing.T, a []T, val T) {
 	}
 }
 func TestObjectKeys(t *testing.T) {
-	o := jsonvalue.Object(map[string]jsonvalue.Value{
+	o := jsonvalue.Object(jsonvalue.Props{
 		"a": jsonvalue.Null(),
 		"b": jsonvalue.Number(123),
 		"c": jsonvalue.String("abc"),
@@ -223,7 +223,7 @@ func TestObjectKeys(t *testing.T) {
 }
 
 func TestObjectGetElm(t *testing.T) {
-	o := jsonvalue.Object(map[string]jsonvalue.Value{
+	o := jsonvalue.Object(jsonvalue.Props{
 		"a": jsonvalue.Null(),
 		"b": jsonvalue.Number(123),
 		"c": jsonvalue.String("abc"),
@@ -309,42 +309,42 @@ func TestObjectSetElm(t *testing.T) {
 
 func TestObjectDelElm(t *testing.T) {
 	t.Run("delete null", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"a": jsonvalue.Null()})
+		o := jsonvalue.Object(jsonvalue.Props{"a": jsonvalue.Null()})
 		o.ObjectDelElm("a")
 		ok := o.ObjectHasElm("a")
 		equal(t, ok, false)
 	})
 
 	t.Run("delete number", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"b": jsonvalue.Number(123)})
+		o := jsonvalue.Object(jsonvalue.Props{"b": jsonvalue.Number(123)})
 		o.ObjectDelElm("b")
 		ok := o.ObjectHasElm("b")
 		equal(t, ok, false)
 	})
 
 	t.Run("delete string", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"c": jsonvalue.String("abc")})
+		o := jsonvalue.Object(jsonvalue.Props{"c": jsonvalue.String("abc")})
 		o.ObjectDelElm("c")
 		ok := o.ObjectHasElm("c")
 		equal(t, ok, false)
 	})
 
 	t.Run("delete boolean", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"d": jsonvalue.Boolean(true)})
+		o := jsonvalue.Object(jsonvalue.Props{"d": jsonvalue.Boolean(true)})
 		o.ObjectDelElm("d")
 		ok := o.ObjectHasElm("d")
 		equal(t, ok, false)
 	})
 
 	t.Run("delete object", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"e": jsonvalue.Object()})
+		o := jsonvalue.Object(jsonvalue.Props{"e": jsonvalue.Object()})
 		o.ObjectDelElm("e")
 		ok := o.ObjectHasElm("e")
 		equal(t, ok, false)
 	})
 
 	t.Run("delete array", func(t *testing.T) {
-		o := jsonvalue.Object(map[string]jsonvalue.Value{"f": jsonvalue.Array()})
+		o := jsonvalue.Object(jsonvalue.Props{"f": jsonvalue.Array()})
 		o.ObjectDelElm("f")
 		ok := o.ObjectHasElm("f")
 		equal(t, ok, false)
@@ -352,7 +352,7 @@ func TestObjectDelElm(t *testing.T) {
 }
 
 func TestObjectLen(t *testing.T) {
-	o := jsonvalue.Object(map[string]jsonvalue.Value{
+	o := jsonvalue.Object(jsonvalue.Props{
 		"a": jsonvalue.Null(),
 		"b": jsonvalue.Number(123),
 		"c": jsonvalue.String("abc"),

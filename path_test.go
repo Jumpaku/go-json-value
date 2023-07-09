@@ -46,16 +46,16 @@ func TestKey_Integer(t *testing.T) {
 func TestPath_Equals(t *testing.T) {
 	t.Run("equal", func(t *testing.T) {
 		p := jsonvalue.Path([]jsonvalue.Key{"abc", "123"})
-		equal(t, p.Equals(jsonvalue.Path([]jsonvalue.Key{"abc", "123"})), true)
+		equal(t, p.Equals(jsonvalue.Path{"abc", "123"}), true)
 	})
 	t.Run("not equal", func(t *testing.T) {
-		p := jsonvalue.Path([]jsonvalue.Key{"abc", "123"})
-		equal(t, p.Equals(jsonvalue.Path([]jsonvalue.Key{"abc", "123", "xyz"})), false)
+		p := jsonvalue.Path{"abc", "123"}
+		equal(t, p.Equals(jsonvalue.Path{"abc", "123", "xyz"}), false)
 	})
 }
 
 func TestPath_Get(t *testing.T) {
-	p := jsonvalue.Path([]jsonvalue.Key{"abc", "123"})
+	p := jsonvalue.Path{"abc", "123"}
 	k0 := p.Get(0)
 	equal(t, k0, jsonvalue.Key("abc"))
 	k1 := p.Get(1)
@@ -63,19 +63,19 @@ func TestPath_Get(t *testing.T) {
 }
 
 func TestPath_Len(t *testing.T) {
-	p := jsonvalue.Path([]jsonvalue.Key{"abc", "123"})
+	p := jsonvalue.Path{"abc", "123"}
 	equal(t, p.Len(), 2)
 }
 
 func TestPath_Append(t *testing.T) {
-	p := jsonvalue.Path([]jsonvalue.Key{"abc", "123"}).Append("xyz")
+	p := jsonvalue.Path{"abc", "123"}.Append("xyz")
 	equal(t, p.Len(), 3)
 	k1 := p.Get(2)
 	equal(t, k1, jsonvalue.Key("xyz"))
 }
 
 func TestPath_Slice(t *testing.T) {
-	p := jsonvalue.Path([]jsonvalue.Key{"abc", "123", "xyz"}).Slice(1, 2)
+	p := jsonvalue.Path{"abc", "123", "xyz"}.Slice(1, 2)
 	equal(t, p.Len(), 1)
 	k1 := p.Get(0)
 	equal(t, k1, jsonvalue.Key("123"))
@@ -99,11 +99,11 @@ func TestWalk(t *testing.T) {
 		equal(t, len(p), 1)
 	})
 	t.Run(`object`, func(t *testing.T) {
-		v := jsonvalue.Object(map[string]jsonvalue.Value{
+		v := jsonvalue.Object(jsonvalue.Props{
 			"a": jsonvalue.Null(),
-			"b": jsonvalue.Object(map[string]jsonvalue.Value{
+			"b": jsonvalue.Object(jsonvalue.Props{
 				"x": jsonvalue.Null(),
-				"y": jsonvalue.Object(map[string]jsonvalue.Value{
+				"y": jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				"z": jsonvalue.Array(
@@ -112,7 +112,7 @@ func TestWalk(t *testing.T) {
 			}),
 			"c": jsonvalue.Array(
 				jsonvalue.Null(),
-				jsonvalue.Object(map[string]jsonvalue.Value{
+				jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				jsonvalue.Array(
@@ -130,9 +130,9 @@ func TestWalk(t *testing.T) {
 	t.Run(`array`, func(t *testing.T) {
 		v := jsonvalue.Array(
 			jsonvalue.Null(),
-			jsonvalue.Object(map[string]jsonvalue.Value{
+			jsonvalue.Object(jsonvalue.Props{
 				"x": jsonvalue.Null(),
-				"y": jsonvalue.Object(map[string]jsonvalue.Value{
+				"y": jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				"z": jsonvalue.Array(
@@ -141,7 +141,7 @@ func TestWalk(t *testing.T) {
 			}),
 			jsonvalue.Array(
 				jsonvalue.Null(),
-				jsonvalue.Object(map[string]jsonvalue.Value{
+				jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				jsonvalue.Array(
@@ -165,11 +165,11 @@ func TestFind(t *testing.T) {
 			equal(t, ok, false)
 		})
 		t.Run(`object`, func(t *testing.T) {
-			v := jsonvalue.Object(map[string]jsonvalue.Value{
+			v := jsonvalue.Object(jsonvalue.Props{
 				"a": jsonvalue.Null(),
-				"b": jsonvalue.Object(map[string]jsonvalue.Value{
+				"b": jsonvalue.Object(jsonvalue.Props{
 					"x": jsonvalue.Null(),
-					"y": jsonvalue.Object(map[string]jsonvalue.Value{
+					"y": jsonvalue.Object(jsonvalue.Props{
 						"w": jsonvalue.Null(),
 					}),
 					"z": jsonvalue.Array(
@@ -178,7 +178,7 @@ func TestFind(t *testing.T) {
 				}),
 				"c": jsonvalue.Array(
 					jsonvalue.Null(),
-					jsonvalue.Object(map[string]jsonvalue.Value{
+					jsonvalue.Object(jsonvalue.Props{
 						"w": jsonvalue.Null(),
 					}),
 					jsonvalue.Array(
@@ -192,9 +192,9 @@ func TestFind(t *testing.T) {
 		t.Run(`array`, func(t *testing.T) {
 			v := jsonvalue.Array(
 				jsonvalue.Null(),
-				jsonvalue.Object(map[string]jsonvalue.Value{
+				jsonvalue.Object(jsonvalue.Props{
 					"x": jsonvalue.Null(),
-					"y": jsonvalue.Object(map[string]jsonvalue.Value{
+					"y": jsonvalue.Object(jsonvalue.Props{
 						"w": jsonvalue.Null(),
 					}),
 					"z": jsonvalue.Array(
@@ -203,7 +203,7 @@ func TestFind(t *testing.T) {
 				}),
 				jsonvalue.Array(
 					jsonvalue.Null(),
-					jsonvalue.Object(map[string]jsonvalue.Value{
+					jsonvalue.Object(jsonvalue.Props{
 						"w": jsonvalue.Null(),
 					}),
 					jsonvalue.Array(
@@ -222,11 +222,11 @@ func TestFind(t *testing.T) {
 		equal(t, a.Type(), jsonvalue.TypeNull)
 	})
 	t.Run(`object`, func(t *testing.T) {
-		v := jsonvalue.Object(map[string]jsonvalue.Value{
+		v := jsonvalue.Object(jsonvalue.Props{
 			"a": jsonvalue.Null(),
-			"b": jsonvalue.Object(map[string]jsonvalue.Value{
+			"b": jsonvalue.Object(jsonvalue.Props{
 				"x": jsonvalue.Null(),
-				"y": jsonvalue.Object(map[string]jsonvalue.Value{
+				"y": jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				"z": jsonvalue.Array(
@@ -235,7 +235,7 @@ func TestFind(t *testing.T) {
 			}),
 			"c": jsonvalue.Array(
 				jsonvalue.Null(),
-				jsonvalue.Object(map[string]jsonvalue.Value{
+				jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				jsonvalue.Array(
@@ -317,9 +317,9 @@ func TestFind(t *testing.T) {
 	t.Run(`array`, func(t *testing.T) {
 		v := jsonvalue.Array(
 			jsonvalue.Null(),
-			jsonvalue.Object(map[string]jsonvalue.Value{
+			jsonvalue.Object(jsonvalue.Props{
 				"x": jsonvalue.Null(),
-				"y": jsonvalue.Object(map[string]jsonvalue.Value{
+				"y": jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				"z": jsonvalue.Array(
@@ -328,7 +328,7 @@ func TestFind(t *testing.T) {
 			}),
 			jsonvalue.Array(
 				jsonvalue.Null(),
-				jsonvalue.Object(map[string]jsonvalue.Value{
+				jsonvalue.Object(jsonvalue.Props{
 					"w": jsonvalue.Null(),
 				}),
 				jsonvalue.Array(

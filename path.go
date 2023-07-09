@@ -14,10 +14,13 @@ func (e Key) String() string {
 }
 func (e Key) Integer() int {
 	elm, err := strconv.ParseInt(e.String(), 10, 64)
-	if err != nil {
-		assert.Unexpected("cannot parse %v to int: %w", e, err)
-	}
+	assert.State(err == nil, "%v cannot be parsed to int: %w", e, err)
+
 	return int(elm)
+}
+
+func KeyInt(i int) Key {
+	return Key(strconv.FormatInt(int64(i), 10))
 }
 
 type Path []Key
