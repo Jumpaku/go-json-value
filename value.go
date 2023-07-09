@@ -9,46 +9,75 @@ import (
 	"github.com/Jumpaku/go-assert"
 )
 
+// Value represents a JSON-structured value
 type Value interface {
 	json.Marshaler
 	json.Unmarshaler
+	// Type returns JSON type.
 	Type() Type
+	// Assign assigns a JSON value to this object.
 	Assign(v Value)
+	// Clone deeply copies itself.
 	Clone() Value
+	// NumberGet returns this JSON value as a number.
 	NumberGet() json.Number
+	// StringGet returns this JSON value as a string.
 	StringGet() string
+	// BooleanGet returns this JSON value as a boolean.
 	BooleanGet() bool
+	// ObjectKeys returns keys of this JSON value as a object.
 	ObjectKeys() []string
+	// ObjectHasElm returns whether this JSON value as a object has the key.
 	ObjectHasElm(key string) bool
+	// ObjectHasElm returns a JSON value associated the key.
 	ObjectGetElm(key string) Value
+	// ObjectHasElm associates a JSON value by the key.
 	ObjectSetElm(key string, v Value)
+	// ObjectDelElm deletes the key and the associated JSON value.
 	ObjectDelElm(key string)
+	// ObjectLen returns the number of keys.
 	ObjectLen() int
+	// ArrayGetElm returns a JSON value indexed.
 	ArrayGetElm(index int) Value
+	// ArraySetElm sets a JSON value at the index.
 	ArraySetElm(index int, v Value)
+	// ArrayAddElm adds JSON values to the back.
 	ArrayAddElm(vs ...Value)
+	// ArrayLen returns the number of elements.
 	ArrayLen() int
+	// ArraySlice returns a sliced JSON array.
 	ArraySlice(begin int, endExclusive int) Value
 }
 
+// Props representing properties of JSON object.
+type Props map[string]Value
+
+// value implements Value
 type value struct {
 	typ        Type
 	numberVal  json.Number
 	booleanVal bool
 	stringVal  string
-	objectVal  map[string]Value
+	objectVal  Props
 	arrayVal   []Value
 }
 
+// Null returns a JSON value representing null.
 func Null() Value {
 	return &value{typ: TypeNull}
 }
+
+// Boolean returns a JSON boolean value.
 func Boolean(b bool) Value {
 	return &value{typ: TypeBoolean, booleanVal: b}
 }
+
+// String returns a JSON string value of s.
 func String(s string) Value {
 	return &value{typ: TypeString, stringVal: s}
 }
+
+// Number returns a JSON number value of n.
 func Number[V ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64 | json.Number](n V) Value {
 	var v json.Number
 	var a any = n
@@ -84,9 +113,10 @@ func Number[V ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16
 	return &value{typ: TypeNumber, numberVal: json.Number(v)}
 }
 
-func Object(ms ...map[string]Value) Value {
-	o := map[string]Value{}
-	for _, m := range ms {
+// Object returns a JSON object value containing specified properties.
+func Object(p ...Props) Value {
+	o := Props{}
+	for _, m := range p {
 		for k, v := range m {
 			assert.Params(v != nil, "Value must not be nil")
 			o[k] = v
@@ -95,6 +125,8 @@ func Object(ms ...map[string]Value) Value {
 
 	return &value{typ: TypeObject, objectVal: o}
 }
+
+// Array returns a JSON array value containing specified values.
 func Array(vs ...Value) Value {
 	a := make([]Value, len(vs))
 	for i, v := range vs {
