@@ -9,7 +9,7 @@ import (
 	"github.com/Jumpaku/go-assert"
 )
 
-// Value represents a JSON-structured value
+// Value models a JSON-structured data.
 type Value interface {
 	json.Marshaler
 	json.Unmarshaler
